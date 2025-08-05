@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "coolify-remote": {
+      "url": "https://your-mcp-server.example.com/mcp",
+      "description": "Remote Coolify MCP Server via HTTP/SSE transport",
+      "capabilities": {
+        "tools": "50+ Coolify API endpoints",
+        "resources": "10+ Coolify data resources", 
+        "prompts": "8+ DevOps workflow prompts"
+      }
+    }
+  }
+}
+
+// Alternative configurations for different hosting scenarios:
+
+// Local development server
+{
+  "mcpServers": {
+    "coolify-local-http": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+
+// Coolify-hosted server (self-hosted)
+{
+  "mcpServers": {
+    "coolify-production": {
+      "url": "https://coolify-mcp.your-domain.com/mcp"
+    }
+  }
+}
+
+// Multiple environment support
+{
+  "mcpServers": {
+    "coolify-staging": {
+      "url": "https://staging-mcp.your-domain.com/mcp"
+    },
+    "coolify-production": {
+      "url": "https://production-mcp.your-domain.com/mcp"
+    }
+  }
+}

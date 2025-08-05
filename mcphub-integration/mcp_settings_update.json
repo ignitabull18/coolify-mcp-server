@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "coolify": {
+      "url": "https://coolify-mcp.your-domain.com/mcp",
+      "description": "Complete Coolify API integration - manage applications, databases, services, deployments, and infrastructure through 50+ tools, 10+ resources, and 8+ workflow prompts",
+      "enabled": true,
+      "group": "infrastructure",
+      "tags": ["devops", "deployment", "infrastructure", "containers", "coolify"],
+      "metadata": {
+        "version": "1.0.0",
+        "author": "Coolify MCP Server",
+        "capabilities": {
+          "tools": "50+ API endpoints covering applications, databases, services, servers, projects, deployments",
+          "resources": "10+ resources for accessing Coolify data (applications, databases, services, etc.)",
+          "prompts": "8+ workflow prompts for common DevOps operations"
+        },
+        "endpoints": {
+          "health": "https://coolify-mcp.your-domain.com/health",
+          "info": "https://coolify-mcp.your-domain.com/info",
+          "mcp": "https://coolify-mcp.your-domain.com/mcp"
+        }
+      }
+    }
+  }
+}
+
+// Instructions:
+// 1. Deploy the Coolify MCP server to your Coolify instance (see deploy-to-coolify.md)
+// 2. Replace "https://coolify-mcp.your-domain.com" with your actual deployed URL
+// 3. Merge this configuration into your existing mcp_settings.json file
+// 4. Restart your MCPHub or use the web dashboard to reload configuration
+// 5. The Coolify server will appear in the "infrastructure" group

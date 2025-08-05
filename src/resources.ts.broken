@@ -1,0 +1,565 @@
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { CoolifyAPIClient } from './api-client.js';
+import { ResourceTemplate as CoolifyResourceTemplate } from './types.js';
+
+export function registerCoolifyResources(server: McpServer, apiClient: CoolifyAPIClient) {
+
+  // ============ APPLICATION RESOURCES ============
+
+  server.registerResource(
+    'applications',
+    CoolifyResourceTemplate.APPLICATION,
+    {
+      title: 'Coolify Applications',
+      description: 'Access detailed information about Coolify applications',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getApplication(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching application: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'application-list',
+    'coolify://applications',
+    {
+      title: 'All Coolify Applications',
+      description: 'List of all applications in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listApplications();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching applications: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ DATABASE RESOURCES ============
+
+  server.registerResource(
+    'databases',
+    CoolifyResourceTemplate.DATABASE,
+    {
+      title: 'Coolify Databases',
+      description: 'Access detailed information about Coolify databases',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getDatabase(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching database: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'database-list',
+    'coolify://databases',
+    {
+      title: 'All Coolify Databases',
+      description: 'List of all databases in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listDatabases();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching databases: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ SERVICE RESOURCES ============
+
+  server.registerResource(
+    'services',
+    CoolifyResourceTemplate.SERVICE,
+    {
+      title: 'Coolify Services',
+      description: 'Access detailed information about Coolify services',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getService(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching service: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'service-list',
+    'coolify://services',
+    {
+      title: 'All Coolify Services',
+      description: 'List of all services in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listServices();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching services: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ SERVER RESOURCES ============
+
+  server.registerResource(
+    'servers',
+    CoolifyResourceTemplate.SERVER,
+    {
+      title: 'Coolify Servers',
+      description: 'Access detailed information about Coolify servers',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getServer(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching server: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'server-list',
+    'coolify://servers',
+    {
+      title: 'All Coolify Servers',
+      description: 'List of all servers in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listServers();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching servers: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ PROJECT RESOURCES ============
+
+  server.registerResource(
+    'projects',
+    CoolifyResourceTemplate.PROJECT,
+    {
+      title: 'Coolify Projects',
+      description: 'Access detailed information about Coolify projects',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getProject(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching project: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'project-list',
+    'coolify://projects',
+    {
+      title: 'All Coolify Projects',
+      description: 'List of all projects in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listProjects();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching projects: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ DEPLOYMENT RESOURCES ============
+
+  server.registerResource(
+    'deployments',
+    CoolifyResourceTemplate.DEPLOYMENT,
+    {
+      title: 'Coolify Deployments',
+      description: 'Access detailed information about Coolify deployments',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getDeployment(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching deployment: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'deployment-list',
+    'coolify://deployments',
+    {
+      title: 'All Coolify Deployments',
+      description: 'List of all current deployments in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listDeployments();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching deployments: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ TEAM RESOURCES ============
+
+  server.registerResource(
+    'teams',
+    CoolifyResourceTemplate.TEAM,
+    {
+      title: 'Coolify Teams',
+      description: 'Access detailed information about Coolify teams',
+      mimeType: 'application/json'
+    },
+    async (uri: URL, extra: any) => {
+      // Extract UUID from the URI
+      const params = { uuid: uri.pathname.split('/').pop() || '' };
+      try {
+        const response = await apiClient.getTeam(params.uuid);
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching team: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  server.registerResource(
+    'team-list',
+    'coolify://teams',
+    {
+      title: 'All Coolify Teams',
+      description: 'List of all teams in your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const response = await apiClient.listTeams();
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(response.data, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching teams: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ OVERVIEW RESOURCES ============
+
+  server.registerResource(
+    'coolify-overview',
+    'coolify://overview',
+    {
+      title: 'Coolify Instance Overview',
+      description: 'Complete overview of your Coolify instance including all resources',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const [
+          applications,
+          databases,
+          services,
+          servers,
+          projects,
+          deployments,
+          version
+        ] = await Promise.all([
+          apiClient.listApplications().catch(e => ({ data: [], error: e.message })),
+          apiClient.listDatabases().catch(e => ({ data: [], error: e.message })),
+          apiClient.listServices().catch(e => ({ data: [], error: e.message })),
+          apiClient.listServers().catch(e => ({ data: [], error: e.message })),
+          apiClient.listProjects().catch(e => ({ data: [], error: e.message })),
+          apiClient.listDeployments().catch(e => ({ data: [], error: e.message })),
+          apiClient.getVersion().catch(e => ({ data: 'Unknown', error: e.message }))
+        ]);
+
+        const overview = {
+          coolify_version: version.data,
+          summary: {
+            applications: Array.isArray(applications.data) ? applications.data.length : 0,
+            databases: Array.isArray(databases.data) ? databases.data.length : 0,
+            services: Array.isArray(services.data) ? services.data.length : 0,
+            servers: Array.isArray(servers.data) ? servers.data.length : 0,
+            projects: Array.isArray(projects.data) ? projects.data.length : 0,
+            active_deployments: Array.isArray(deployments.data) ? deployments.data.length : 0
+          },
+          details: {
+            applications: applications.data,
+            databases: databases.data,
+            services: services.data,
+            servers: servers.data,
+            projects: projects.data,
+            deployments: deployments.data
+          }
+        };
+
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(overview, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching overview: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+
+  // ============ STATUS RESOURCES ============
+
+  server.registerResource(
+    'coolify-status',
+    'coolify://status',
+    {
+      title: 'Coolify Instance Status',
+      description: 'Health and status information for your Coolify instance',
+      mimeType: 'application/json'
+    },
+    async (uri: URL) => {
+      try {
+        const [healthCheck, version] = await Promise.all([
+          apiClient.healthCheck().catch(e => ({ data: { status: 'error', error: e.message } })),
+          apiClient.getVersion().catch(e => ({ data: 'Unknown' }))
+        ]);
+
+        const status = {
+          version: version.data,
+          health: healthCheck.data,
+          timestamp: new Date().toISOString()
+        };
+
+        return {
+          contents: [{
+            uri: uri.href,
+            text: JSON.stringify(status, null, 2),
+            mimeType: 'application/json'
+          }]
+        };
+      } catch (error) {
+        return {
+          contents: [{
+            uri: uri.href,
+            text: `Error fetching status: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            mimeType: 'text/plain'
+          }]
+        };
+      }
+    }
+  );
+}

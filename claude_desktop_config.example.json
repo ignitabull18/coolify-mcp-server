@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "coolify": {
+      "command": "node",
+      "args": ["/absolute/path/to/coolify-mcp-server/build/index.js"],
+      "env": {
+        "COOLIFY_BASE_URL": "https://app.coolify.io/api/v1",
+        "COOLIFY_API_TOKEN": "your_api_token_here"
+      }
+    }
+  }
+}

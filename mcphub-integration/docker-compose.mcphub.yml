@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # Option 1: Deploy Coolify MCP Server separately and connect via HTTP
+  coolify-mcp-server:
+    build: 
+      context: ../  # Path to coolify-mcp-server directory
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"  # Expose on different port to avoid conflicts
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - COOLIFY_BASE_URL=https://your-coolify-instance.com/api/v1
+      - COOLIFY_API_TOKEN=your_coolify_api_token_here
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - mcphub-network
+
+  # Your existing MCPHub service
+  mcphub:
+    image: samanhappy/mcphub:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mcp_settings.json:/app/mcp_settings.json
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - coolify-mcp-server
+    restart: unless-stopped
+    networks:
+      - mcphub-network
+
+networks:
+  mcphub-network:
+    driver: bridge
+
+---
+
+# Alternative: All-in-one configuration where MCPHub manages the Coolify server directly
+version: '3.8'
+
+services:
+  mcphub-with-coolify:
+    image: samanhappy/mcphub:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mcp_settings.json:/app/mcp_settings.json
+      - ./data:/app/data
+      # Mount the built Coolify MCP server
+      - ../build:/app/mcp-servers/coolify-mcp-server
+    environment:
+      - NODE_ENV=production
+      # Global environment variables for the Coolify server
+      - COOLIFY_BASE_URL=https://your-coolify-instance.com/api/v1
+      - COOLIFY_API_TOKEN=your_coolify_api_token_here
+    restart: unless-stopped
+
+# Usage Instructions:
+# 1. Choose the deployment method that fits your needs
+# 2. Update the environment variables with your actual Coolify instance details
+# 3. Update the paths to match your directory structure
+# 4. Run: docker-compose -f docker-compose.mcphub.yml up -d

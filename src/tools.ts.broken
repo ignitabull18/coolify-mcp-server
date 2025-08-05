@@ -1,0 +1,1006 @@
+import { z } from 'zod';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { CoolifyAPIClient } from './api-client.js';
+import {
+  ApplicationCreateSchema,
+  DatabaseCreateSchema,
+  ServiceCreateSchema,
+  ServerCreateSchema,
+  ProjectCreateSchema,
+  EnvironmentVariableSchema
+} from './types.js';
+
+export function registerCoolifyTools(server: McpServer, apiClient: CoolifyAPIClient) {
+  
+  // ============ APPLICATION TOOLS ============
+  
+  server.registerTool(
+    'list-applications',
+    {
+      title: 'List Applications',
+      description: 'Retrieve all applications in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listApplications();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-application',
+    {
+      title: 'Get Application',
+      description: 'Get detailed information about a specific application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-application',
+    {
+      title: 'Create Application',
+      description: 'Create a new application in Coolify',
+      inputSchema: ApplicationCreateSchema.shape
+    },
+    async (data: any) => {
+      const response = await apiClient.createApplication(data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application created successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-application',
+    {
+      title: 'Update Application',
+      description: 'Update an existing application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID'),
+        name: z.string().optional(),
+        description: z.string().optional(),
+        git_branch: z.string().optional(),
+        build_pack: z.enum(['nixpacks', 'static', 'dockerfile', 'compose']).optional()
+      }
+    },
+    async ({ uuid, ...data }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.updateApplication(uuid, data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application updated successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-application',
+    {
+      title: 'Delete Application',
+      description: 'Delete an application and all its resources',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deleteApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application deleted successfully: ${response.message || 'Deleted'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'start-application',
+    {
+      title: 'Start Application',
+      description: 'Start a stopped application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.startApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application started: ${response.message || 'Started successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'stop-application',
+    {
+      title: 'Stop Application',
+      description: 'Stop a running application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.stopApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application stopped: ${response.message || 'Stopped successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'restart-application',
+    {
+      title: 'Restart Application',
+      description: 'Restart a running application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.restartApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Application restarted: ${response.message || 'Restarted successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-application-logs',
+    {
+      title: 'Get Application Logs',
+      description: 'Retrieve logs for an application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getApplicationLogs(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: response.data || 'No logs available'
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'deploy-application',
+    {
+      title: 'Deploy Application',
+      description: 'Trigger a new deployment for an application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deployApplication(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Deployment started: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  // ============ APPLICATION ENVIRONMENT VARIABLES ============
+
+  server.registerTool(
+    'list-application-envs',
+    {
+      title: 'List Application Environment Variables',
+      description: 'Get all environment variables for an application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.listApplicationEnvs(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-application-env',
+    {
+      title: 'Create Application Environment Variable',
+      description: 'Add a new environment variable to an application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID'),
+        key: z.string().describe('Environment variable key'),
+        value: z.string().describe('Environment variable value'),
+        is_preview: z.boolean().default(false).describe('Available in preview deployments'),
+        is_build_time: z.boolean().default(false).describe('Available during build time'),
+        is_multiline: z.boolean().default(false).describe('Multiline value')
+      }
+    },
+    async ({ uuid, ...envData }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.createApplicationEnv(uuid, envData);
+      return {
+        content: [{
+          type: 'text',
+          text: `Environment variable created: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-application-env',
+    {
+      title: 'Update Application Environment Variable',
+      description: 'Update an existing environment variable',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID'),
+        env_id: z.string().describe('Environment variable ID'),
+        key: z.string().optional().describe('Environment variable key'),
+        value: z.string().optional().describe('Environment variable value'),
+        is_preview: z.boolean().optional().describe('Available in preview deployments'),
+        is_build_time: z.boolean().optional().describe('Available during build time'),
+        is_multiline: z.boolean().optional().describe('Multiline value')
+      }
+    },
+    async ({ uuid, env_id, ...envData }: { uuid: string; env_id: string; [key: string]: any }) => {
+      const response = await apiClient.updateApplicationEnv(uuid, env_id, envData);
+      return {
+        content: [{
+          type: 'text',
+          text: `Environment variable updated: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-application-env',
+    {
+      title: 'Delete Application Environment Variable',
+      description: 'Remove an environment variable from an application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID'),
+        env_id: z.string().describe('Environment variable ID')
+      }
+    },
+    async ({ uuid, env_id }: { uuid: string; env_id: string }) => {
+      const response = await apiClient.deleteApplicationEnv(uuid, env_id);
+      return {
+        content: [{
+          type: 'text',
+          text: `Environment variable deleted: ${response.message || 'Deleted successfully'}`
+        }]
+      };
+    }
+  );
+
+  // ============ DATABASE TOOLS ============
+
+  server.registerTool(
+    'list-databases',
+    {
+      title: 'List Databases',
+      description: 'Retrieve all databases in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listDatabases();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-database',
+    {
+      title: 'Get Database',
+      description: 'Get detailed information about a specific database',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getDatabase(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-database',
+    {
+      title: 'Create Database',
+      description: 'Create a new database instance in Coolify',
+      inputSchema: DatabaseCreateSchema.shape
+    },
+    async (data: any) => {
+      const response = await apiClient.createDatabase(data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database created successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-database',
+    {
+      title: 'Update Database',
+      description: 'Update an existing database configuration',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID'),
+        name: z.string().optional(),
+        description: z.string().optional()
+      }
+    },
+    async ({ uuid, ...data }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.updateDatabase(uuid, data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database updated successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-database',
+    {
+      title: 'Delete Database',
+      description: 'Delete a database and all its data (irreversible)',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deleteDatabase(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database deleted successfully: ${response.message || 'Deleted'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'start-database',
+    {
+      title: 'Start Database',
+      description: 'Start a stopped database',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.startDatabase(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database started: ${response.message || 'Started successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'stop-database',
+    {
+      title: 'Stop Database',
+      description: 'Stop a running database',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.stopDatabase(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database stopped: ${response.message || 'Stopped successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'restart-database',
+    {
+      title: 'Restart Database',
+      description: 'Restart a running database',
+      inputSchema: {
+        uuid: z.string().describe('Database UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.restartDatabase(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Database restarted: ${response.message || 'Restarted successfully'}`
+        }]
+      };
+    }
+  );
+
+  // ============ SERVICE TOOLS ============
+
+  server.registerTool(
+    'list-services',
+    {
+      title: 'List Services',
+      description: 'Retrieve all services in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listServices();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-service',
+    {
+      title: 'Get Service',
+      description: 'Get detailed information about a specific service',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getService(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-service',
+    {
+      title: 'Create Service',
+      description: 'Create a new service in Coolify',
+      inputSchema: ServiceCreateSchema.shape
+    },
+    async (data: any) => {
+      const response = await apiClient.createService(data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service created successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-service',
+    {
+      title: 'Update Service',
+      description: 'Update an existing service',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID'),
+        name: z.string().optional(),
+        description: z.string().optional()
+      }
+    },
+    async ({ uuid, ...data }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.updateService(uuid, data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service updated successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-service',
+    {
+      title: 'Delete Service',
+      description: 'Delete a service and all its resources',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deleteService(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service deleted successfully: ${response.message || 'Deleted'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'start-service',
+    {
+      title: 'Start Service',
+      description: 'Start a stopped service',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.startService(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service started: ${response.message || 'Started successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'stop-service',
+    {
+      title: 'Stop Service',
+      description: 'Stop a running service',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.stopService(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service stopped: ${response.message || 'Stopped successfully'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'restart-service',
+    {
+      title: 'Restart Service',
+      description: 'Restart a running service',
+      inputSchema: {
+        uuid: z.string().describe('Service UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.restartService(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Service restarted: ${response.message || 'Restarted successfully'}`
+        }]
+      };
+    }
+  );
+
+  // ============ SERVER TOOLS ============
+
+  server.registerTool(
+    'list-servers',
+    {
+      title: 'List Servers',
+      description: 'Retrieve all servers in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listServers();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-server',
+    {
+      title: 'Get Server',
+      description: 'Get detailed information about a specific server',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getServer(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-server',
+    {
+      title: 'Create Server',
+      description: 'Add a new server to Coolify',
+      inputSchema: ServerCreateSchema.shape
+    },
+    async (data: any) => {
+      const response = await apiClient.createServer(data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Server created successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-server',
+    {
+      title: 'Update Server',
+      description: 'Update server configuration',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID'),
+        name: z.string().optional(),
+        description: z.string().optional()
+      }
+    },
+    async ({ uuid, ...data }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.updateServer(uuid, data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Server updated successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-server',
+    {
+      title: 'Delete Server',
+      description: 'Remove a server from Coolify',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deleteServer(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Server deleted successfully: ${response.message || 'Deleted'}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'validate-server',
+    {
+      title: 'Validate Server',
+      description: 'Validate server connection and Docker installation',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.validateServer(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Server validation result: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-server-resources',
+    {
+      title: 'Get Server Resources',
+      description: 'Get all resources running on a server',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getServerResources(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-server-domains',
+    {
+      title: 'Get Server Domains',
+      description: 'Get all domains configured on a server',
+      inputSchema: {
+        uuid: z.string().describe('Server UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getServerDomains(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  // ============ PROJECT TOOLS ============
+
+  server.registerTool(
+    'list-projects',
+    {
+      title: 'List Projects',
+      description: 'Retrieve all projects in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listProjects();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-project',
+    {
+      title: 'Get Project',
+      description: 'Get detailed information about a specific project',
+      inputSchema: {
+        uuid: z.string().describe('Project UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getProject(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'create-project',
+    {
+      title: 'Create Project',
+      description: 'Create a new project in Coolify',
+      inputSchema: ProjectCreateSchema.shape
+    },
+    async (data: any) => {
+      const response = await apiClient.createProject(data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Project created successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'update-project',
+    {
+      title: 'Update Project',
+      description: 'Update project information',
+      inputSchema: {
+        uuid: z.string().describe('Project UUID'),
+        name: z.string().optional(),
+        description: z.string().optional()
+      }
+    },
+    async ({ uuid, ...data }: { uuid: string; [key: string]: any }) => {
+      const response = await apiClient.updateProject(uuid, data);
+      return {
+        content: [{
+          type: 'text',
+          text: `Project updated successfully: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'delete-project',
+    {
+      title: 'Delete Project',
+      description: 'Delete a project and all its resources',
+      inputSchema: {
+        uuid: z.string().describe('Project UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.deleteProject(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: `Project deleted successfully: ${response.message || 'Deleted'}`
+        }]
+      };
+    }
+  );
+
+  // ============ DEPLOYMENT TOOLS ============
+
+  server.registerTool(
+    'list-deployments',
+    {
+      title: 'List Deployments',
+      description: 'Retrieve all current deployments',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listDeployments();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'get-deployment',
+    {
+      title: 'Get Deployment',
+      description: 'Get detailed information about a specific deployment',
+      inputSchema: {
+        uuid: z.string().describe('Deployment UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.getDeployment(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'list-application-deployments',
+    {
+      title: 'List Application Deployments',
+      description: 'Get deployment history for a specific application',
+      inputSchema: {
+        uuid: z.string().describe('Application UUID')
+      }
+    },
+    async ({ uuid }: { uuid: string }) => {
+      const response = await apiClient.listApplicationDeployments(uuid);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+
+  // ============ GENERAL TOOLS ============
+
+  server.registerTool(
+    'get-coolify-version',
+    {
+      title: 'Get Coolify Version',
+      description: 'Get the current version of your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.getVersion();
+      return {
+        content: [{
+          type: 'text',
+          text: `Coolify Version: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'health-check',
+    {
+      title: 'Health Check',
+      description: 'Check the health status of your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.healthCheck();
+      return {
+        content: [{
+          type: 'text',
+          text: `Health Status: ${JSON.stringify(response.data, null, 2)}`
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
+    'list-all-resources',
+    {
+      title: 'List All Resources',
+      description: 'Get an overview of all resources in your Coolify instance',
+      inputSchema: {}
+    },
+    async () => {
+      const response = await apiClient.listResources();
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify(response.data, null, 2)
+        }]
+      };
+    }
+  );
+}

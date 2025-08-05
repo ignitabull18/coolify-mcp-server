@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "coolify": {
+      "url": "https://coolify-mcp.your-domain.com/mcp",
+      "description": "Complete Coolify API integration - manage applications, databases, services, deployments, and infrastructure",
+      "enabled": true,
+      "group": "infrastructure",
+      "tags": ["devops", "deployment", "infrastructure", "containers"]
+    }
+  }
+}
+
+// Alternative configuration with custom headers (if you need authentication)
+{
+  "mcpServers": {
+    "coolify": {
+      "url": "https://coolify-mcp.your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer your-optional-auth-token",
+        "X-Custom-Header": "your-custom-value"
+      },
+      "description": "Complete Coolify API integration with custom authentication",
+      "enabled": true,
+      "group": "infrastructure",
+      "tags": ["devops", "deployment", "infrastructure", "containers"]
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "mcpServers": {
+    "coolify": {
+      "command": "node",
+      "args": ["/path/to/coolify-mcp-server/build/index.js"],
+      "env": {
+        "COOLIFY_BASE_URL": "https://your-coolify-instance.com/api/v1",
+        "COOLIFY_API_TOKEN": "your_coolify_api_token_here",
+        "NODE_ENV": "production"
+      },
+      "description": "Complete Coolify API integration running locally within MCPHub",
+      "enabled": true,
+      "group": "infrastructure",
+      "tags": ["devops", "deployment", "infrastructure", "containers", "coolify"],
+      "autoRestart": true,
+      "workingDir": "/path/to/coolify-mcp-server"
+    }
+  }
+}
+
+// Docker Volume Mount Instructions:
+// 1. Build the Coolify MCP server: npm run build
+// 2. Mount the built server into your MCPHub container:
+//    docker run -v /path/to/coolify-mcp-server:/mcp-servers/coolify-mcp-server samanhappy/mcphub
+// 3. Update the paths in this configuration to match your mount point
+// 4. Add this configuration to your mcp_settings.json
