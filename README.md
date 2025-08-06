@@ -4,8 +4,8 @@ A comprehensive Model Context Protocol (MCP) server that provides complete acces
 
 ## Features ✨
 
-### 🛠️ **50+ API Tools**
-Complete coverage of all Coolify endpoints:
+### 🛠️ **90+ API Tools**
+Complete coverage of all Coolify endpoints with type-specific routing:
 - **Applications**: Create, deploy, update, start/stop/restart, environment variables, logs
 - **Databases**: PostgreSQL, MySQL, MariaDB, MongoDB, Redis, DragonFly, KeyDB, ClickHouse
 - **Services**: One-click services, custom deployments, lifecycle management
