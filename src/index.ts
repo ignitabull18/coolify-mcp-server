@@ -5,9 +5,9 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { config } from 'dotenv';
 import { CoolifyAPIClient } from './api-client.js';
 import { CoolifyConfig, CoolifyAPIError } from './types.js';
-import { registerCoolifyTools } from './tools-all.js';
-import { registerCoolifyResources } from './resources-simple.js';
-import { registerCoolifyPrompts } from './prompts-simple.js';
+import { registerCoolifyTools } from './tools-robust.js';
+import { registerCoolifyResources } from './resources-enhanced.js';
+import { registerCoolifyPrompts } from './prompts-enhanced.js';
 
 // Load environment variables
 config();
