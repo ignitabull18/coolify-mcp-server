@@ -5,7 +5,7 @@ import express from 'express';
 import { config } from 'dotenv';
 import { CoolifyAPIClient } from './api-client.js';
 import { CoolifyConfig, CoolifyAPIError } from './types.js';
-import { registerCoolifyTools } from './tools-robust.js';
+import { registerAllCoolifyTools } from './tools/index.js';
 import { registerCoolifyResources } from './resources-enhanced.js';
 import { registerCoolifyPrompts } from './prompts-enhanced.js';
 
@@ -72,7 +72,7 @@ async function createMcpServer(): Promise<McpServer> {
 
   // Register all components
   console.log('📦 Registering Coolify tools...');
-  registerCoolifyTools(server, apiClient);
+  registerAllCoolifyTools(server, apiClient);
   
   console.log('📚 Registering Coolify resources...');
   registerCoolifyResources(server, apiClient);

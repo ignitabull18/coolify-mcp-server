@@ -5,7 +5,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { config } from 'dotenv';
 import { CoolifyAPIClient } from './api-client.js';
 import { CoolifyConfig, CoolifyAPIError } from './types.js';
-import { registerCoolifyTools } from './tools-robust.js';
+import { registerAllCoolifyTools } from './tools/index.js';
 import { registerCoolifyResources } from './resources-enhanced.js';
 import { registerCoolifyPrompts } from './prompts-enhanced.js';
 
@@ -67,7 +67,7 @@ async function createServer(): Promise<McpServer> {
   });
 
   // Register all components
-  registerCoolifyTools(server, apiClient);
+  registerAllCoolifyTools(server, apiClient);
   registerCoolifyResources(server, apiClient);
   registerCoolifyPrompts(server, apiClient);
 
