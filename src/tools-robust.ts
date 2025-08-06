@@ -1,4 +1,5 @@
 import { CoolifyAPIClient } from './api-client.js';
+import { z } from 'zod';
 
 // Helper function to safely format tool response
 function createToolResponse(data: any, isError: boolean = false): any {
@@ -64,7 +65,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-application',
     {
       title: 'Get Application',
-      description: 'Get details of a specific application. Requires: uuid'
+      description: 'Get details of a specific application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the application')
+      }
     },
     async (args: any) => {
       if (!args.uuid) {
@@ -184,7 +188,18 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-database',
     {
       title: 'Create Database',
-      description: 'Create a new database. Requires database configuration data. Example data: {"server_uuid": "server-id", "project_uuid": "project-id", "name": "my-db", "image": "postgres:15", "postgres_user": "user", "postgres_password": "password", "postgres_db": "dbname"}'
+      description: 'Create a new database. Requires database configuration data.',
+      inputSchema: {
+        data: z.object({
+          server_uuid: z.string().describe('UUID of the server'),
+          project_uuid: z.string().describe('UUID of the project'),
+          name: z.string().describe('Database name'),
+          image: z.string().describe('Database image (e.g., postgres:15)'),
+          postgres_user: z.string().optional().describe('PostgreSQL username'),
+          postgres_password: z.string().optional().describe('PostgreSQL password'),
+          postgres_db: z.string().optional().describe('PostgreSQL database name')
+        })
+      }
     },
     async (args: any) => {
       if (!args.data) {
@@ -696,7 +711,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'deploy-application',
     {
       title: 'Deploy Application',
-      description: 'Deploy an application. This will trigger a new deployment with the latest code from the configured git repository. Requires: uuid'
+      description: 'Deploy an application. This will trigger a new deployment with the latest code from the configured git repository. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the application to deploy')
+      }
     },
     async (args: any) => {
       if (!args.uuid) {
@@ -922,7 +940,18 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-application',
     {
       title: 'Create Application',
-      description: 'Create a new application. Requires application configuration data. Example data: {"server_uuid": "server-id", "project_uuid": "project-id", "name": "my-app", "git_repository": "https://github.com/user/repo", "git_branch": "main", "build_pack": "nixpacks", "ports_exposes": "3000"}'
+      description: 'Create a new application. Requires application configuration data.',
+      inputSchema: {
+        data: z.object({
+          server_uuid: z.string().describe('UUID of the server'),
+          project_uuid: z.string().describe('UUID of the project'),
+          name: z.string().describe('Application name'),
+          git_repository: z.string().describe('Git repository URL'),
+          git_branch: z.string().optional().describe('Git branch (default: main)'),
+          build_pack: z.string().optional().describe('Build pack (nixpacks, dockerfile, etc.)'),
+          ports_exposes: z.string().optional().describe('Exposed port (e.g., "3000")')
+        })
+      }
     },
     async (args: any) => {
       if (!args.data) {
@@ -1070,7 +1099,15 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-application-env',
     {
       title: 'Create Application Environment Variable',
-      description: 'Create environment variable for an application. Requires: uuid, data. Example data: {"key": "NODE_ENV", "value": "production", "is_build_time": false}'
+      description: 'Create environment variable for an application. Requires: uuid, data.',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the application'),
+        data: z.object({
+          key: z.string().describe('Environment variable key'),
+          value: z.string().describe('Environment variable value'),
+          is_build_time: z.boolean().optional().describe('Whether this is a build-time variable')
+        })
+      }
     },
     async (args: any) => {
       if (!args.uuid || !args.data) {
