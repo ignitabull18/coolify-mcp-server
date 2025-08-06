@@ -358,4 +358,4 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Built with ❤️ for the Coolify and MCP communities**
+**Built with ❤️ for the Coolify and MCP communities**# Trigger deployment Wed Aug  6 16:36:06 PDT 2025
