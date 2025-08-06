@@ -127,7 +127,31 @@ export class CoolifyAPIClient {
   }
 
   async createDatabase(data: any) {
-    return this.post('/databases', data);
+    // Determine database type from image or explicit type field
+    const image = data.image || '';
+    const type = data.type || '';
+    
+    let endpoint = '/databases';
+    
+    if (type === 'postgresql' || image.includes('postgres')) {
+      endpoint = '/databases/postgresql';
+    } else if (type === 'mysql' || image.includes('mysql')) {
+      endpoint = '/databases/mysql';
+    } else if (type === 'mongodb' || image.includes('mongo')) {
+      endpoint = '/databases/mongodb';
+    } else if (type === 'redis' || image.includes('redis')) {
+      endpoint = '/databases/redis';
+    } else if (type === 'mariadb' || image.includes('mariadb')) {
+      endpoint = '/databases/mariadb';
+    } else if (type === 'clickhouse' || image.includes('clickhouse')) {
+      endpoint = '/databases/clickhouse';
+    } else if (type === 'dragonfly' || image.includes('dragonfly')) {
+      endpoint = '/databases/dragonfly';
+    } else if (type === 'keydb' || image.includes('keydb')) {
+      endpoint = '/databases/keydb';
+    }
+    
+    return this.post(endpoint, data);
   }
 
   async updateDatabase(uuid: string, data: any) {

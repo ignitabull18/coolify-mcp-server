@@ -186,11 +186,19 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
         data: z.object({
           server_uuid: z.string().describe('UUID of the server'),
           project_uuid: z.string().describe('UUID of the project'),
+          environment_name: z.string().optional().describe('Environment name (e.g., "production")'),
           name: z.string().describe('Database name'),
-          image: z.string().describe('Database image (e.g., postgres:15)'),
+          description: z.string().optional().describe('Database description'),
+          image: z.string().describe('Database image (e.g., postgres:15, mysql:8.0, mongo:7)'),
+          type: z.string().optional().describe('Database type (postgresql, mysql, mongodb, redis, etc.)'),
           postgres_user: z.string().optional().describe('PostgreSQL username'),
           postgres_password: z.string().optional().describe('PostgreSQL password'),
-          postgres_db: z.string().optional().describe('PostgreSQL database name')
+          postgres_db: z.string().optional().describe('PostgreSQL database name'),
+          mysql_root_password: z.string().optional().describe('MySQL root password'),
+          mysql_user: z.string().optional().describe('MySQL username'),
+          mysql_password: z.string().optional().describe('MySQL password'),
+          mysql_database: z.string().optional().describe('MySQL database name'),
+          instant_deploy: z.boolean().optional().describe('Deploy immediately after creation')
         })
       }
     },
