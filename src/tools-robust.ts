@@ -162,14 +162,7 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
       title: 'Get Database',
       description: 'Get details of a specific database. Requires: uuid',
       inputSchema: {
-        type: 'object',
-        properties: {
-          uuid: {
-            type: 'string',
-            description: 'UUID of the database to retrieve'
-          }
-        },
-        required: ['uuid']
+        uuid: z.string().describe('UUID of the database')
       }
     },
     async (args: any) => {
@@ -217,8 +210,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-database',
     {
       title: 'Update Database',
-      description: 'Update database configuration. Requires: uuid, data'
-    },
+      description: 'Update database configuration. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update database'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -235,8 +234,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-database',
     {
       title: 'Delete Database',
-      description: 'Delete a database. Requires: uuid'
-    },
+      description: 'Delete a database. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete database')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -253,8 +254,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'start-database',
     {
       title: 'Start Database',
-      description: 'Start a database. Requires: uuid'
-    },
+      description: 'Start a database. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the start database')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -271,8 +274,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'stop-database',
     {
       title: 'Stop Database',
-      description: 'Stop a database. Requires: uuid'
-    },
+      description: 'Stop a database. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the stop database')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -289,8 +294,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'restart-database',
     {
       title: 'Restart Database',
-      description: 'Restart a database. Requires: uuid'
-    },
+      description: 'Restart a database. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the restart database')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -311,8 +318,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-service',
     {
       title: 'Get Service',
-      description: 'Get details of a specific service. Requires: uuid'
-    },
+      description: 'Get details of a specific service. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get service')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -329,7 +338,16 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-service',
     {
       title: 'Create Service',
-      description: 'Create a new service. Requires service configuration data'
+      description: 'Create a new service. Requires service configuration data',
+      inputSchema: {
+        data: z.object({
+          server_uuid: z.string().describe('UUID of the server where the service will be deployed'),
+          project_uuid: z.string().describe('UUID of the project'),
+          name: z.string().describe('Service name'),
+          docker_compose_raw: z.string().optional().describe('Raw docker-compose configuration'),
+          description: z.string().optional().describe('Service description')
+        })
+      }
     },
     async (args: any) => {
       if (!args.data) {
@@ -347,8 +365,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-service',
     {
       title: 'Update Service',
-      description: 'Update service configuration. Requires: uuid, data'
-    },
+      description: 'Update service configuration. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update service'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -365,8 +389,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-service',
     {
       title: 'Delete Service',
-      description: 'Delete a service. Requires: uuid'
-    },
+      description: 'Delete a service. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete service')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -383,8 +409,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'start-service',
     {
       title: 'Start Service',
-      description: 'Start a service. Requires: uuid'
-    },
+      description: 'Start a service. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the start service')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -401,8 +429,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'stop-service',
     {
       title: 'Stop Service',
-      description: 'Stop a service. Requires: uuid'
-    },
+      description: 'Stop a service. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the stop service')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -419,8 +449,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'restart-service',
     {
       title: 'Restart Service',
-      description: 'Restart a service. Requires: uuid'
-    },
+      description: 'Restart a service. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the restart service')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -455,8 +487,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-server',
     {
       title: 'Get Server',
-      description: 'Get details of a specific server. Requires: uuid'
-    },
+      description: 'Get details of a specific server. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get server')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -473,8 +507,13 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-server',
     {
       title: 'Create Server',
-      description: 'Create a new server. Requires server configuration data'
-    },
+      description: 'Create a new server. Requires server configuration data',
+      inputSchema: {
+        data: z.object({
+          name: z.string().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.data) {
         return createToolResponse('Error: data parameter is required', true);
@@ -491,8 +530,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-server',
     {
       title: 'Update Server',
-      description: 'Update server configuration. Requires: uuid, data'
-    },
+      description: 'Update server configuration. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update server'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -509,8 +554,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-server',
     {
       title: 'Delete Server',
-      description: 'Delete a server. Requires: uuid'
-    },
+      description: 'Delete a server. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete server')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -527,8 +574,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-server-resources',
     {
       title: 'Get Server Resources',
-      description: 'Get resources for a specific server. Requires: uuid'
-    },
+      description: 'Get resources for a specific server. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get server resources')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -545,8 +594,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-server-domains',
     {
       title: 'Get Server Domains',
-      description: 'Get domains for a specific server. Requires: uuid'
-    },
+      description: 'Get domains for a specific server. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get server domains')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -563,8 +614,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'validate-server',
     {
       title: 'Validate Server',
-      description: 'Validate server configuration. Requires: uuid'
-    },
+      description: 'Validate server configuration. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the validate server')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -585,8 +638,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-project',
     {
       title: 'Get Project',
-      description: 'Get details of a specific project. Requires: uuid'
-    },
+      description: 'Get details of a specific project. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get project')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -603,7 +658,13 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-project',
     {
       title: 'Create Project',
-      description: 'Create a new project. Requires project configuration data'
+      description: 'Create a new project. Requires project configuration data',
+      inputSchema: {
+        data: z.object({
+          name: z.string().describe('Project name'),
+          description: z.string().optional().describe('Project description')
+        })
+      }
     },
     async (args: any) => {
       if (!args.data) {
@@ -621,8 +682,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-project',
     {
       title: 'Update Project',
-      description: 'Update project configuration. Requires: uuid, data'
-    },
+      description: 'Update project configuration. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update project'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -639,8 +706,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-project',
     {
       title: 'Delete Project',
-      description: 'Delete a project. Requires: uuid'
-    },
+      description: 'Delete a project. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete project')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -657,8 +726,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-project-environment',
     {
       title: 'Get Project Environment',
-      description: 'Get environment for a specific project. Requires: uuid'
-    },
+      description: 'Get environment for a specific project. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get project environment')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -693,8 +764,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-deployment',
     {
       title: 'Get Deployment',
-      description: 'Get details of a specific deployment. Requires: uuid'
-    },
+      description: 'Get details of a specific deployment. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get deployment')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -746,8 +819,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'list-application-deployments',
     {
       title: 'List Application Deployments',
-      description: 'List deployments for a specific application. Requires: uuid'
-    },
+      description: 'List deployments for a specific application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the list application deployments')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -782,8 +857,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-team',
     {
       title: 'Get Team',
-      description: 'Get details of a specific team. Requires: uuid'
-    },
+      description: 'Get details of a specific team. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get team')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -969,8 +1046,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-application',
     {
       title: 'Update Application',
-      description: 'Update application configuration. Requires: uuid, data'
-    },
+      description: 'Update application configuration. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update application'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -987,8 +1070,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-application',
     {
       title: 'Delete Application',
-      description: 'Delete an application. Requires: uuid'
-    },
+      description: 'Delete an application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete application')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1005,8 +1090,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'get-application-logs',
     {
       title: 'Get Application Logs',
-      description: 'Get logs for a specific application. Requires: uuid'
-    },
+      description: 'Get logs for a specific application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the get application logs')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1023,8 +1110,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'start-application',
     {
       title: 'Start Application',
-      description: 'Start an application. Requires: uuid'
-    },
+      description: 'Start an application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the start application')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1041,8 +1130,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'stop-application',
     {
       title: 'Stop Application',
-      description: 'Stop an application. Requires: uuid'
-    },
+      description: 'Stop an application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the stop application')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1059,8 +1150,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'restart-application',
     {
       title: 'Restart Application',
-      description: 'Restart an application. Requires: uuid'
-    },
+      description: 'Restart an application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the restart application')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1081,8 +1174,10 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'list-application-envs',
     {
       title: 'List Application Environment Variables',
-      description: 'List environment variables for a specific application. Requires: uuid'
-    },
+      description: 'List environment variables for a specific application. Requires: uuid',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the list application envs')
+      }},
     async (args: any) => {
       if (!args.uuid) {
         return createToolResponse('Error: uuid parameter is required', true);
@@ -1125,8 +1220,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-application-env',
     {
       title: 'Update Application Environment Variable',
-      description: 'Update environment variable for an application. Requires: uuid, envId, data'
-    },
+      description: 'Update environment variable for an application. Requires: uuid, envId, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update application env'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.envId || !args.data) {
         return createToolResponse('Error: uuid, envId, and data parameters are required', true);
@@ -1143,8 +1244,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-application-env',
     {
       title: 'Delete Application Environment Variable',
-      description: 'Delete environment variable for an application. Requires: uuid, envId'
-    },
+      description: 'Delete environment variable for an application. Requires: uuid, envId',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete application env'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.envId) {
         return createToolResponse('Error: uuid and envId parameters are required', true);
@@ -1183,8 +1290,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'create-service-env',
     {
       title: 'Create Service Environment Variable',
-      description: 'Create environment variable for a service. Requires: uuid, data'
-    },
+      description: 'Create environment variable for a service. Requires: uuid, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the create service env'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.data) {
         return createToolResponse('Error: uuid and data parameters are required', true);
@@ -1201,8 +1314,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'update-service-env',
     {
       title: 'Update Service Environment Variable',
-      description: 'Update environment variable for a service. Requires: uuid, envId, data'
-    },
+      description: 'Update environment variable for a service. Requires: uuid, envId, data',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the update service env'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.envId || !args.data) {
         return createToolResponse('Error: uuid, envId, and data parameters are required', true);
@@ -1219,8 +1338,14 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
     'delete-service-env',
     {
       title: 'Delete Service Environment Variable',
-      description: 'Delete environment variable for a service. Requires: uuid, envId'
-    },
+      description: 'Delete environment variable for a service. Requires: uuid, envId',
+      inputSchema: {
+        uuid: z.string().describe('UUID of the delete service env'),
+        data: z.object({
+          name: z.string().optional().describe('Name'),
+          description: z.string().optional().describe('Description')
+        }).passthrough()
+      }},
     async (args: any) => {
       if (!args.uuid || !args.envId) {
         return createToolResponse('Error: uuid and envId parameters are required', true);
