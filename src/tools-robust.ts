@@ -1030,11 +1030,16 @@ export function registerCoolifyTools(server: any, apiClient: CoolifyAPIClient) {
         data: z.object({
           server_uuid: z.string().describe('UUID of the server'),
           project_uuid: z.string().describe('UUID of the project'),
+          environment_name: z.string().optional().describe('Environment name (e.g., "production")'),
           name: z.string().describe('Application name'),
-          git_repository: z.string().describe('Git repository URL'),
+          description: z.string().optional().describe('Application description'),
+          git_repository: z.string().describe('Git repository URL (e.g., https://github.com/user/repo.git)'),
           git_branch: z.string().optional().describe('Git branch (default: main)'),
-          build_pack: z.string().optional().describe('Build pack (nixpacks, dockerfile, etc.)'),
-          ports_exposes: z.string().optional().describe('Exposed port (e.g., "3000")')
+          build_pack: z.string().optional().describe('Build pack (nixpacks, dockerfile, static, etc.)'),
+          type: z.string().optional().describe('Application type (public, github-app, deploy-key, dockerfile, docker-image, docker-compose)'),
+          ports_exposes: z.string().optional().describe('Exposed port (e.g., "3000")'),
+          fqdn: z.string().optional().describe('Fully qualified domain name (e.g., app.example.com)'),
+          instant_deploy: z.boolean().optional().describe('Deploy immediately after creation')
         })
       }
     },

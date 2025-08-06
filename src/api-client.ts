@@ -73,7 +73,30 @@ export class CoolifyAPIClient {
   }
 
   async createApplication(data: any) {
-    return this.post('/applications', data);
+    // Determine application type and route to correct endpoint
+    const type = data.type || '';
+    const gitRepository = data.git_repository || '';
+    const dockerImage = data.docker_image || '';
+    const dockerComposeRaw = data.docker_compose_raw || '';
+    const buildPack = data.build_pack || '';
+    
+    let endpoint = '/applications/public'; // Default to public
+    
+    if (type === 'public' || (!type && gitRepository && !data.private_key_uuid && !data.github_app_uuid)) {
+      endpoint = '/applications/public';
+    } else if (type === 'github-app' || data.github_app_uuid) {
+      endpoint = '/applications/github-app';  
+    } else if (type === 'deploy-key' || data.private_key_uuid) {
+      endpoint = '/applications/deploy-key';
+    } else if (type === 'dockerfile' || buildPack === 'dockerfile') {
+      endpoint = '/applications/dockerfile';
+    } else if (type === 'docker-image' || dockerImage) {
+      endpoint = '/applications/docker-image';
+    } else if (type === 'docker-compose' || dockerComposeRaw || buildPack === 'docker-compose') {
+      endpoint = '/applications/docker-compose';
+    }
+    
+    return this.post(endpoint, data);
   }
 
   async updateApplication(uuid: string, data: any) {
@@ -184,7 +207,7 @@ export class CoolifyAPIClient {
   }
 
   async createService(data: any) {
-    return this.post('/services', data);
+    return this.post('/services/service', data);
   }
 
   async updateService(uuid: string, data: any) {
